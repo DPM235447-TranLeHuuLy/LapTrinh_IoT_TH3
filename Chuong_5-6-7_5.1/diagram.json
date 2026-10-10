@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "author": "Anonymous maker",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": -48,
+      "left": -110.36,
+      "attrs": { "env": "micropython-20231005-v1.21.0" }
+    },
+    { "type": "wokwi-breadboard-half", "id": "bb1", "top": 0, "left": 60, "attrs": {} },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht1",
+      "top": -143.7,
+      "left": 157.8,
+      "attrs": { "temperature": "60.2" }
+    }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "esp:3V3", "bb1:tp.1", "red", [ "h-20", "v-48", "h219.75" ] ],
+    [ "esp:GND.1", "bb1:tn.1", "black", [ "h140", "v-80" ] ],
+    [ "dht1:SDA", "bb1:11.a", "green", [ "v15" ] ],
+    [ "esp:15", "bb1:11.e", "green", [ "v20", "h200" ] ],
+    [ "dht1:SDA", "bb1:11t.a", "green", [ "v0" ] ],
+    [ "dht1:VCC", "bb1:tp.8", "red", [ "v0" ] ],
+    [ "dht1:GND", "bb1:tn.10", "black", [ "v0" ] ],
+    [ "esp:15", "bb1:11t.e", "green", [ "h19.2", "v-9.6", "h172.4" ] ]
+  ],
+  "dependencies": {}
+}

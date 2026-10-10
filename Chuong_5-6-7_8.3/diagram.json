@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "author": "IoT Lab 03 - AGU",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-servo",
+      "id": "servo1",
+      "top": -100,
+      "left": 250,
+      "attrs": { "hornColor": "red" }
+    },
+    {
+      "type": "wokwi-servo",
+      "id": "servo2",
+      "top": 80,
+      "left": 250,
+      "attrs": { "hornColor": "blue" }
+    }
+  ],
+  "connections": [
+    ["esp:GND.1", "servo1:GND", "black", ["v0"]],
+    ["esp:GND.1", "servo2:GND", "black", ["v0"]],
+    ["esp:VIN", "servo1:V+", "red", ["v0"]],
+    ["esp:VIN", "servo2:V+", "red", ["v0"]],
+    ["esp:13", "servo1:PWM", "orange", ["v0"]],
+    ["esp:14", "servo2:PWM", "green", ["v0"]]
+  ]
+}

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Arduino Web Controlled Servo</title>
+    <!-- Thư viện jQuery -->
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f7f9fa;
+            margin-top: 50px;
+        }
+        .main-box {
+            background: #ffffff;
+            width: 440px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h2 { color: #2c3e50; margin-bottom: 20px; }
+        p { font-size: 15px; color: #555; margin-bottom: 10px; }
+        input[type="range"] {
+            width: 85%;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+        .pos-display {
+            font-size: 26px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .status {
+            font-size: 13px;
+            color: #28a745;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-box">
+    <h2>Arduino Web Controlled Servo</h2>
+    <p>Scroll it to move the servo</p>
+    
+    <input type="range" id="servoSlider" min="0" max="180" value="90">
+    
+    <div class="pos-display">Góc hiện tại: <span id="pos">90</span>°</div>
+    <div class="status" id="status">Sẵn sàng điều khiển</div>
+</div>
+
+<script>
+    // Cấu hình tài khoản Adafruit IO của bạn
+    var AIO_USERNAME = "tranlehuuly";
+    var AIO_KEY = "YOUR_AIO_KEY";
+    var AIO_FEED = "servo-control";
+
+    var isSending = false;
+    var sendTimeout = null;
+
+    function sendAngleToAdafruit(angle) {
+        $("#status").text("Đang gửi lệnh...").css("color", "#ff9800");
+
+        $.ajax({
+            url: "https://io.adafruit.com/api/v2/" + AIO_USERNAME + "/feeds/" + AIO_FEED + "/data",
+            type: "POST",
+            headers: {
+                "X-AIO-Key": AIO_KEY,
+                "Content-Type": "application/json"
+            },
+            data: JSON.stringify({ value: angle }),
+            success: function() {
+                $("#status").text("Đã gửi thành công: " + angle + "°").css("color", "#28a745");
+            },
+            error: function(err) {
+                $("#status").text("Lỗi gửi dữ liệu").css("color", "red");
+                console.error(err);
+            },
+            complete: function() {
+                isSending = false;
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        $("#servoSlider").on("input change", function() {
+            var val = $(this).val();
+            $("#pos").text(val);
+
+            // Chống spam request vượt giới hạn rate limit của Adafruit IO
+            clearTimeout(sendTimeout);
+            sendTimeout = setTimeout(function() {
+                sendAngleToAdafruit(val);
+            }, 300); // Gửi sau 0.3s khi dừng kéo
+        });
+    });
+</script>
+
+</body>
+</html>
